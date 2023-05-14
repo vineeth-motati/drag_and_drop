@@ -1,5 +1,5 @@
 {
-  "name": "drag_and_drop",
+  "name": "dnd",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,11 +11,15 @@
   "dependencies": {
     "autoprefixer": "10.4.14",
     "eslint": "8.40.0",
-    "eslint-config-next": "13.4.2",
-    "next": "13.4.2",
+    "eslint-config-next": "13.4.1",
+    "next": "13.4.1",
     "postcss": "8.4.23",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tailwindcss": "3.3.2"
+  },
+  "devDependencies": {
+    "@iconify/icons-material-symbols": "^1.2.40",
+    "@iconify/react": "^4.1.0"
   }
 }
