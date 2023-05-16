@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import undoIcon from "@iconify/icons-material-symbols/undo";
+var undoCount = 0;
 
 const Table = () => {
   const [items, setItems] = useState([
@@ -16,25 +17,23 @@ const Table = () => {
     { name: "Item9", bgColor: "bg-cyan-300" },
   ]);
   const [sourceDestination, setSourceDestination] = useState(["", ""]);
-  const [undoSourceDestination, setUndoSourceDestination] = useState(["", ""]);
+  const [undoSourceDestination, setUndoSourceDestination] = useState([]);
 
-  const undo = undoSourceDestination.every((value) => value !== "");
+  const undo = undoCount != 0;
   useEffect(() => {
     if (
       sourceDestination.every((value) => value !== "") &&
       !sourceDestination[1].includes(sourceDestination[0])
     ) {
-      setUndoSourceDestination(() => [...sourceDestination]);
     }
   }, [sourceDestination]);
 
   const handleUndo = () => {
-    // setSourceDestination(undoSourceDestination);
-    // setSourceDestination((prevState) => {
-    //   return [...undoSourceDestination];
-    // });
-    dragAndDrop(undoSourceDestination);
-    setUndoSourceDestination(["", ""]);
+    undoCount = undoCount - 1;
+
+    const undoValues = undoSourceDestination.slice(-2);
+    dragAndDrop(undoValues);
+    setUndoSourceDestination((prevState) => prevState.slice(0, -2));
   };
 
   const dragAndDrop = ([sourceItemId, destCellId]) => {
@@ -52,11 +51,6 @@ const Table = () => {
     });
 
     swapObjects(itemsCopy, sourceDivIndex, destDivIndex);
-    if (!destCellId.includes(sourceItemId)) {
-      // setUndoSourceDestination(sourceDestination);
-    }
-
-    // setItems(itemsCopy);
 
     const sourceElement = document.getElementById(sourceItemId);
     const destElement = document.getElementById(
@@ -64,6 +58,10 @@ const Table = () => {
     );
 
     if (sourceElement && destElement && sourceElement !== destElement) {
+      // setUndoSourceDestination((prevState) => [
+      //   ...prevState,
+      //   ...sourceDestination,
+      // ]);
       // Get the offset positions of the source and destination elements
       const sourceOffset = sourceElement.getBoundingClientRect();
       const destOffset = destElement.getBoundingClientRect();
@@ -140,7 +138,13 @@ const Table = () => {
   const handleDragEnd = (event) => {
     event.preventDefault();
     if (sourceDestination.every((value) => value !== "")) {
+      undoCount = undoCount + 1;
+
       dragAndDrop(sourceDestination);
+      setUndoSourceDestination((prevState) => [
+        ...prevState,
+        ...sourceDestination,
+      ]);
     }
     event.target.classList.remove("opacity-50");
   };
